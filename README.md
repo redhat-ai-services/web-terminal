@@ -13,7 +13,6 @@ metadata:
     controller.devfile.io/restricted-access: "true"
   labels:
     console.openshift.io/terminal: "true"
-    controller.devfile.io/creator: ""
   generateName: terminal-
   namespace: openshift-terminal
 spec:
@@ -21,27 +20,23 @@ spec:
   started: true
   template:
     components:
-    - name: web-terminal-tooling
-      plugin:
-        components:
-        - container:
-            image: 
-          name: web-terminal-tooling
-        kubernetes:
-          name: web-terminal-tooling
-          namespace: openshift-operators
-    - name: web-terminal-exec
-      plugin:
-        components:
-        - container:
-            image: quay.io/eformat/web-terminal:latest-x86_64
-            env:
-              - name: WEB_TERMINAL_IDLE_TIMEOUT
-                value: 240m
-            args: ["sleep", "infinity"]
-          name: web-terminal-exec
-        kubernetes:
-          name: web-terminal-exec
-          namespace: openshift-operators
+      - name: web-terminal-tooling
+        plugin:
+          kubernetes:
+            name: web-terminal-tooling
+            namespace: openshift-operators
+          components:
+          - container:
+              image: quay.io/eformat/web-terminal:latest-x86_64
+              imagePullPolicy: Always
+              env:
+                - name: WEB_TERMINAL_IDLE_TIMEOUT
+                  value: 240m
+            name: web-terminal-tooling
+      - name: web-terminal-exec
+        plugin:
+          kubernetes:
+            name: web-terminal-exec
+            namespace: openshift-operators
 EOF
 ```

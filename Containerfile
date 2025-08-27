@@ -1,4 +1,5 @@
 FROM registry.redhat.io/web-terminal/web-terminal-tooling-rhel9@sha256:0b133afa920b5180a3c3abe3dd5c73a9cfc252a71346978f94adcb659d683404
+# registry.redhat.io/web-terminal/web-terminal-exec-rhel9@sha256:6e58f2d6a1619a06be05807ff5407924087b7b27611628f9baf999733b67645b
 
 USER root
 
