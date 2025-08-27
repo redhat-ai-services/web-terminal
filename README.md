@@ -3,6 +3,28 @@
 For use in OpenShift web terminal
 
 ```bash
+oc apply -f - <<EOF
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: web-terminal
+  namespace: openshift-operators
+spec:
+  channel: fast
+  installPlanApproval: Automatic
+  name: web-terminal
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-terminal
+EOF
+```
+
+```bash
 oc create -f - <<EOF
 ---
 apiVersion: workspace.devfile.io/v1alpha2
