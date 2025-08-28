@@ -13,8 +13,10 @@ ENV ARGOCD_VERSION=3.1.1 \
 
 ENV PACKAGES="zip iputils bind-utils net-tools nodejs npm nodejs-nodemon python3 python3-pip httpd-tools"
 
-RUN dnf -y install --allowerasing \
+RUN dnf -y install \
     ${PACKAGES} && \
+    # not in ubi and need libc match
+    dnf -y install https://kojipkgs.fedoraproject.org//packages/gettext/0.21/7.fc35/x86_64/gettext-0.21-7.fc35.x86_64.rpm https://kojipkgs.fedoraproject.org//packages/gettext/0.21/7.fc35/x86_64/gettext-libs-0.21-7.fc35.x86_64.rpm && \
     dnf -y -q clean all && rm -rf /var/cache/yum && \
     ln -s /usr/bin/node /usr/bin/nodejs
 
@@ -67,3 +69,8 @@ RUN curl -skL -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustom
 
 USER 1001
 WORKDIR /home/user
+RUN rm -f .bashrc .viminfo .bash_profile .bash_logout .gitconfig
+RUN cp ../tooling/.bashrc .bashrc
+RUN cp ../tooling/.bash_profile .bash_profile
+RUN cp ../tooling/.viminfo .viminfo
+RUN cp ../tooling/.gitconfig .gitconfig
