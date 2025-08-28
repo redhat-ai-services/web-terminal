@@ -1,5 +1,5 @@
-FROM registry.redhat.io/web-terminal/web-terminal-tooling-rhel9@sha256:0b133afa920b5180a3c3abe3dd5c73a9cfc252a71346978f94adcb659d683404
-# registry.redhat.io/web-terminal/web-terminal-exec-rhel9@sha256:6e58f2d6a1619a06be05807ff5407924087b7b27611628f9baf999733b67645b
+FROM quay.io/devfile/base-developer-image:ubi9-latest
+# registry.redhat.io/web-terminal/web-terminal-tooling-rhel9@sha256:0b133afa920b5180a3c3abe3dd5c73a9cfc252a71346978f94adcb659d683404
 
 USER root
 
@@ -13,10 +13,14 @@ ENV ARGOCD_VERSION=3.1.1 \
 
 ENV PACKAGES="zip iputils bind-utils net-tools nodejs npm nodejs-nodemon python3 python3-pip httpd-tools"
 
-RUN microdnf -y install \
+RUN dnf -y install --allowerasing \
     ${PACKAGES} && \
-    microdnf -y clean all && rm -rf /var/cache/yum && \
+    dnf -y -q clean all && rm -rf /var/cache/yum && \
     ln -s /usr/bin/node /usr/bin/nodejs
+
+# python global deps
+RUN pip install --no-cache-dir ansible && \
+    echo "🦀🦀🦀🦀🦀"
 
 # argo
 RUN curl -sL https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64 -o /usr/local/bin/argocd && \
