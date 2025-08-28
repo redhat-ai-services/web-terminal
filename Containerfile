@@ -66,3 +66,4 @@ RUN curl -skL -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustom
     echo "🐾🐾🐾🐾🐾"
 
 USER 1001
+WORKDIR /home/user
