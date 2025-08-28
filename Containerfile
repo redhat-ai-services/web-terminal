@@ -70,7 +70,7 @@ RUN curl -skL -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustom
 USER 1001
 WORKDIR /home/user
 RUN rm -f .bashrc .viminfo .bash_profile .bash_logout .gitconfig
-RUN cp ../tooling/.bashrc .bashrc
-RUN cp ../tooling/.bash_profile .bash_profile
-RUN cp ../tooling/.viminfo .viminfo
-RUN cp ../tooling/.gitconfig .gitconfig
+RUN cp ../tooling/.bashrc .bashrc && chmod 660 .bashrc
+RUN cp ../tooling/.bash_profile .bash_profile && chmod 660 .bash_profile
+RUN cp ../tooling/.viminfo .viminfo && chmod 660 .viminfo
+RUN cp ../tooling/.gitconfig .gitconfig && chmod 660 .gitconfig
