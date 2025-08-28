@@ -50,7 +50,6 @@ spec:
           components:
           - container:
               image: quay.io/eformat/web-terminal:latest-x86_64
-              imagePullPolicy: Always
             name: web-terminal-tooling
       - name: web-terminal-exec
         plugin:
