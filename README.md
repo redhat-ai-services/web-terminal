@@ -51,9 +51,6 @@ spec:
           - container:
               image: quay.io/eformat/web-terminal:latest-x86_64
               imagePullPolicy: Always
-              env:
-                - name: WEB_TERMINAL_IDLE_TIMEOUT
-                  value: 240m
             name: web-terminal-tooling
       - name: web-terminal-exec
         plugin:
