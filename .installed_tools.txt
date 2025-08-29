@@ -8,6 +8,6 @@ vault      1.20.2          Hashi Vault CLI
 python     3.9.21          python
 node       16.20.2         Nodejs
 bash       5.1.8           bash
-ansible    8.7.0           ansible
+ansible    2.15.13         ansible-core
 argocd     3.1.1           ArgoCD CLI
 yq         4.23.1          yq
