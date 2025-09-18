@@ -67,15 +67,20 @@ RUN curl -skL -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustom
     rm -rf /tmp/kustomize.tar.gz && \
     echo "🐾🐾🐾🐾🐾"
 
-USER 1001
+USER user
 WORKDIR /home/user
+
+# we have to customize all this as there are not great overrides unfortunately
 RUN rm -f .bashrc .viminfo .bash_profile .bash_logout .gitconfig
-RUN cp ../tooling/.bash_profile .bash_profile && chmod 660 .bash_profile
-RUN cp ../tooling/.viminfo .viminfo && chmod 660 .viminfo
-RUN cp ../tooling/.gitconfig .gitconfig && chmod 660 .gitconfig
-ADD .bashrc .bashrc 
-ADD .installed_tools.txt .installed_tools.txt
 USER root
-RUN chmod 660 .bashrc && chown 1001:root .bashrc
-RUN chmod 440 .installed_tools.txt && chown 1001:root .installed_tools.txt
-USER 1001
+ADD entrypoint.sh /entrypoint.sh
+ADD .copy-files ../tooling/.copy-files
+ADD .stow-local-ignore ../tooling/.stow-local-ignore
+ADD .bashrc ../tooling/.bashrc
+ADD .installed_tools.txt ../tooling/.installed_tools.txt
+RUN chmod 755 /entrypoint.sh && chown root:root /entrypoint.sh
+RUN chmod 664 ../tooling/.copy-files && chown user:root ../tooling/.copy-files
+RUN chmod 664 ../tooling/.stow-local-ignore && chown user:root ../tooling/.stow-local-ignore
+RUN chmod 660 ../tooling/.bashrc && chown user:root ../tooling/.bashrc
+RUN chmod 440 ../tooling/.installed_tools.txt && chown user:root ../tooling/.installed_tools.txt
+USER user
