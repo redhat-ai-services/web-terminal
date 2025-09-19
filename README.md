@@ -2,6 +2,8 @@
 
 For use in OpenShift web terminal
 
+Deploy the Operator
+
 ```bash
 oc apply -f - <<EOF
 ---
@@ -23,6 +25,8 @@ metadata:
   name: openshift-terminal
 EOF
 ```
+
+Create a DevWorkspace for Web Terminal
 
 ```bash
 oc create -f - <<EOF
@@ -49,7 +53,7 @@ spec:
             namespace: openshift-operators
           components:
           - container:
-              image: quay.io/eformat/web-terminal:latest-x86_64
+              image: quay.io/redhat-ai-services/web-terminal:latest-x86_64
             name: web-terminal-tooling
       - name: web-terminal-exec
         plugin:

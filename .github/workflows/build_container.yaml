@@ -1,0 +1,78 @@
+name: Build containers
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+  workflow_dispatch:
+
+env:
+  REGISTRY: quay.io
+  IMAGE_NAME: ${{ github.repository }}
+  TAGS: ${{ github.ref_name == 'main' && 'latest' || github.ref_type == 'tag' && github.ref_name && startsWith(github.ref_name, 'v') && github.ref_name || 'unknown' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build
+        run: make podman-build
+
+      #- name: Test
+      #  run: make test
+
+      # Build runtime image from s2i image output
+      - name: Buildah Action
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ env.TAGS }}
+          containerfiles: |
+            ./Containerfile
+
+      # Login to Registry
+      - name: Log in to the Container registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.QUAY_USERNAME }}      # ${{ github.actor }} - for ghcr.io
+          password: ${{ secrets.QUAY_PASSWORD }}     # quay.io
+      #   password: ${{ secrets.GITHUB_TOKEN }}   # ghcr.io
+
+      - name: Push to Container Repository
+        id: push-to-registry
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ env.TAGS }}
+          registry: ${{ env.REGISTRY }}
+
+      # Provenance signing image
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.9.2
+
+      - name: Write signing key to disk (only needed for `cosign sign --key`)
+        run: echo "${{ secrets.SIGNING_SECRET }}" > cosign.key
+
+      - name: Sign container image with TAGS
+        run: |
+          cosign sign --key cosign.key \
+            -a "repo=${{ github.repository }}" \
+            -a "workflow=${{ github.workflow }}" \
+            -a "ref=${{ github.sha }}" \
+            -y \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAGS }}
+        env:
+          COSIGN_PASSWORD: ""
