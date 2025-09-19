@@ -62,3 +62,25 @@ spec:
             namespace: openshift-operators
 EOF
 ```
+
+### Signature
+
+The public key of [web-terminal image](https://quay.io/repository/redhat-ai-services/web-terminal)
+
+[Cosign](https://github.com/sigstore/cosign) public key:
+
+```shell
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE8uVyWFdZwq0eE/u3yeXqHJr/ZIEV
+C5MS7M9++JtsEYGuvpZ45tr962KOegDc3uUrDjxKv9Zu+/FZWf5v+fqwtA==
+-----END PUBLIC KEY-----
+```
+
+The public key is also available online: <https://raw.githubusercontent.com/redhat-ai-services/web-terminal/refs/heads/main/cosign.pub>
+
+To verify an image:
+
+```shell
+curl --progress-bar -o cosign.pub https://raw.githubusercontent.com/redhat-ai-services/web-terminal/refs/heads/main/cosign.pub
+cosign verify --key cosign.pub https://quay.io/repository/redhat-ai-services/web-terminal:${VERSION}
+```
